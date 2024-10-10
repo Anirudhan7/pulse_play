@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:pluseplay/database/function/hive_store.dart';
 import 'package:pluseplay/database/function/internal_storage.dart';
+import 'package:pluseplay/database/models/all_song_model.dart';
+import 'package:pluseplay/screens/allsongs/allsongs.dart';
+import 'package:pluseplay/screens/favourites/favorites_screen.dart';
+import 'package:pluseplay/screens/search/search.dart';
+import 'package:pluseplay/screens/settings/settings_screen.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:pluseplay/screens/widgets/all_songs_widget.dart';
+import 'package:pluseplay/screens/nowPlaying/now_play.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -8,26 +16,6 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 
-  // List of songs
-  final List<Map<String, String>> allSongs = [
-    {
-      'title': 'Monster Go Bump',
-      'artist': 'Erika Recinos',
-      'image': 'lib/assets/images/believer.jpeg'
-    },
-    {
-      'title': 'Short Wave',
-      'artist': 'Ryan Grigory',
-      'image': 'lib/assets/images/shortwave.jpeg'
-    },
-    {
-      'title': 'Dream On',
-      'artist': 'Roger Terry',
-      'image': 'lib/assets/images/dream on.jpg'
-    },
-  ];
-
-  // List of recent plays
   final List<Map<String, String>> recentPlays = [
     {
       'title': 'Believer',
@@ -41,7 +29,6 @@ class HomeScreen extends StatefulWidget {
     },
   ];
 
-  // List of artists
   final List<Map<String, String>> artists = [
     {'name': 'Drake', 'image': 'lib/assets/images/download.jpeg'},
     {'name': 'Eminem', 'image': 'lib/assets/images/eminem.webp'},
@@ -51,29 +38,32 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-@override
+
+  @override
   void initState() {
     fetch();
+    getAllSongs();
     super.initState();
-    
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: const Color.fromARGB(255, 13, 3, 56),
           title: const Text(
-            "PlusPlay",
+            "PulsePlay",
             style: TextStyle(color: Colors.white),
           ),
           actions: [
             IconButton(
               icon: const Icon(Icons.settings, color: Colors.white),
-              onPressed: () async{
-                // Handle settings
-               // StorageService().fetch();
-              await fetch();
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
               },
             ),
           ],
@@ -84,11 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // All Songs section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       "All Songs",
                       style: TextStyle(
                         fontSize: 20,
@@ -96,75 +85,54 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                       ),
                     ),
-                    // Text(
-                    //   "See More",
-                    //   style: TextStyle(
-                    //     fontSize: 15,
-                    //     color: Colors.white,
-                    //   ),
-                    // ),
                     TextButton(
-                      onPressed: () {},
-                      child: Text("Seemore",
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AllSongsPage()),
+                        );
+                      },
+                      child: const Text("See More",
                           style: TextStyle(color: Colors.white)),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
-
-                // All Songs List
-                SizedBox(
-                  height: 160,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: widget.allSongs.length,
-                    itemBuilder: (context, index) {
-                      final song = widget.allSongs[index];
-                      return Container(
-                        width: 120,
-                        margin: const EdgeInsets.only(right: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.asset(
-                                song['image']!,
-                                height: 100,
-                                width: 120,
-                                fit: BoxFit.cover,
+                ValueListenableBuilder<List<AllSongModel>>(
+                  valueListenable: allSongNotifier,
+                  builder: (context, allSongs, child) {
+                    return SizedBox(
+                      height: 160,
+                      child: allSongs.isEmpty
+                          ? const Center(
+                              child: Text(
+                                "No Songs Found",
+                                style: TextStyle(color: Colors.white),
                               ),
+                            )
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: allSongs.length,
+                              itemBuilder: (context, index) {
+                                final song = allSongs[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PlayingNow(song: song),
+                                      ),
+                                    );
+                                  },
+                                  child: AllSongsWidget(song: song),
+                                );
+                              },
                             ),
-                            const SizedBox(height: 8),
-                            Text(
-                              song['title']!,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(
-                              song['artist']!,
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                    );
+                  },
                 ),
-
-                const SizedBox(height: 24), // Space between sections
-
-                // Recent Plays Section
+                const SizedBox(height: 24),
                 const Text(
                   "Recent Plays",
                   style: TextStyle(
@@ -174,18 +142,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-
-                // Recent Plays List (Updated)
                 SizedBox(
-                  height: 160, // Keeping height as it was
+                  height: 160,
                   child: ListView.builder(
-                    scrollDirection:
-                        Axis.horizontal, // Enable horizontal scrolling
+                    scrollDirection: Axis.horizontal,
                     itemCount: widget.recentPlays.length,
                     itemBuilder: (context, index) {
                       final play = widget.recentPlays[index];
                       return Container(
-                        width: 160, // Adjust width to display larger items
+                        width: 160,
                         margin: const EdgeInsets.only(right: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,10 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                 ),
-
-                const SizedBox(height: 24), // Space between sections
-
-                // Artists Section
+                const SizedBox(height: 24),
                 const Text(
                   "Artists",
                   style: TextStyle(
@@ -238,10 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-
-                // Artists List
                 SizedBox(
-                  height: 120, // Adjust height as needed
+                  height: 120,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: widget.artists.length,
@@ -254,8 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  50), // Circular artist image
+                              borderRadius: BorderRadius.circular(50),
                               child: Image.asset(
                                 artist['image']!,
                                 height: 80,
@@ -285,38 +244,33 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         backgroundColor: Colors.black,
-
-        // Bottom Navigation Bar
-        bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: Colors.black,
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.white,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
+          color: const Color.fromARGB(255, 27, 9, 163),
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.library_music),
-              label: 'Library',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Favorites',
-            ),
+            Icon(Icons.home, color: Colors.white),
+            Icon(Icons.search, color: Colors.white), 
+            Icon(Icons.library_music, color: Colors.white),
+            Icon(Icons.favorite, color: Colors.white),
           ],
           onTap: (int index) {
-            setState(() {
-              _selectedIndex = index;
-            });
+            if (index == 1) { 
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchPage()), 
+              );
+            } else if (index == 3) { 
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FavoritesScreen()),
+              );
+            } else {
+              setState(() {
+                _selectedIndex = index;
+              });
+            }
           },
+          height: 60,
         ),
       ),
     );

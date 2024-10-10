@@ -13,12 +13,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 13, 1, 57),
+      backgroundColor: const Color.fromARGB(255, 13, 1, 57),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 40.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 40.0),
             child: Center(
               child: Text(
                 'PulsePlay',
@@ -59,9 +59,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children: [
                         Icon(Icons.music_note),
                         SizedBox(width: 8),
                         Text('Click here to continue'),

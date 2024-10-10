@@ -1,71 +1,40 @@
-import 'package:permission_handler/permission_handler.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:pluseplay/database/models/all_song_model.dart';
+import 'package:pluseplay/database/function/hive_store.dart';
 
-class StorageService {
-  final OnAudioQuery _audioQuery = OnAudioQuery();
-
-  Future<List<AllSongModel>> fetchAllSongs() async {
-    print("Requesting permission to fetch songs...");
-
-    // bool permissionGranted = await requestPermission();
-    // if (!permissionGranted) {
-    //   permissionGranted = await requestPermission();
-    //   if (!permissionGranted) {
-    //     print('Storage permission still not granted');
-    //     return [];
-    //   }
-    // }
-
-    print("Querying songs...");
-    List<SongModel> songs = await _audioQuery.querySongs();
-      print(songs);
-    if (songs.isEmpty) {
-      print("No songs found on device");
-      return [];
-    }
-
-    List<AllSongModel> songList = songs.map((song) {
-      return AllSongModel(
-        id: song.id,
-        songTitle: song.title,
-        artist: song.artist ?? 'Unknown Artist',
-        uri: song.uri ?? '',
-        songPath: song.data,
-        imageUri: null,
-      );
-    }).toList();
-
-    print("Fetched ${songList.length} songs ascasdcacsxaSxazxZXZXZXZXsdx");
-    return songList;
-  }
-}
-
-Future<bool> requestPermission() async {
-  if (await Permission.audio.isGranted) {
-    print("Permission already granted");
-    return true;
-  }
-
-  var result = await Permission.audio.request();
-
-  if (result.isGranted) {
-    print("Permission granted");
-    return true;
-  } else {
-    print("Permission denied");
-    return false;
-  }
-}
 
 Future<void> fetch() async {
-  List<SongModel> songs1 = await audioquery.querySongs(
+  final audioquery = OnAudioQuery();
+  bool permissionStatus = await audioquery.permissionsStatus();
+  
+  if (!permissionStatus) {
+    permissionStatus = await audioquery.permissionsRequest();
+  }
+
+  if (permissionStatus) {
+    List<SongModel> songs1 = await audioquery.querySongs(
       sortType: null,
       orderType: OrderType.ASC_OR_SMALLER,
       uriType: UriType.EXTERNAL,
-      ignoreCase: true);
-    
-  print(",,,,,, ${songs1}");
+      ignoreCase: true,
+    );
+    List<SongModel> mp3Songs = songs1.where((song) => song.data.endsWith('.mp3')).toList();
+    await addToAllsong(mp3Songs);
+    print(",,,,,, $mp3Songs");
+  } else {
+    print("Permission denied");
+  }
 }
 
-final audioquery = OnAudioQuery();
+// Future<void> fetch() async {
+//   final audioquery = OnAudioQuery();
+//   List<SongModel> songs1 = await audioquery.querySongs(
+//     sortType: null,
+//     orderType: OrderType.ASC_OR_SMALLER,
+//     uriType: UriType.EXTERNAL,
+//     ignoreCase: true,
+//   );
+//   List<SongModel> mp3Songs = songs1.where((song) => song.data.endsWith('.mp3')).toList();
+//   await addToAllsong(mp3Songs);
+
+//   print(",,,,,, $mp3Songs");
+// }

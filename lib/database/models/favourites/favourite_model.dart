@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 import 'package:hive/hive.dart';
+part 'favourite_model.g.dart';
 
-part 'all_song_model.g.dart';
-
-@HiveType(typeId: 1)
-class AllSongModel {
+@HiveType(typeId: 2) 
+class FavoriteModel {
   @HiveField(0)
-  int? id;
+  int id;
+
   @HiveField(1)
   final String songTitle;
 
@@ -14,26 +14,26 @@ class AllSongModel {
   final String artist;
 
   @HiveField(3)
-  final String uri;
+  final String? uri;
 
   @HiveField(4)
-  final String songPath;
+  Uint8List imageUri;
 
   @HiveField(5)
-  Uint8List? imageUri;
+  final String songPath;
 
-  AllSongModel({
-    this.id,
+  FavoriteModel({
+    required this.id,
     required this.songTitle,
     required this.artist,
     required this.uri,
-    required this.songPath,
     required this.imageUri,
+    required this.songPath,
   });
 
   Uint8List? get imageBytes => imageUri;
 
   set imageBytes(Uint8List? bytes) {
-    imageUri = bytes;
+    imageUri = bytes!;
   }
 }

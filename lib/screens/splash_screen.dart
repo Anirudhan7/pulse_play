@@ -14,7 +14,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashscreenState extends State<SplashScreen> {
   @override
   void initState() {
-    requestPermission();
+  //  requestPermission();
     super.initState();
     _navigateToNextScreen();
   }
@@ -50,7 +50,7 @@ class _SplashscreenState extends State<SplashScreen> {
               fit: BoxFit.cover,
             ),
           ),
-          Center(
+          const Center(
             child: Text(
               "PulsePlay",
               style: TextStyle(

@@ -39,6 +39,9 @@ dependencies:
   hive_flutter: ^1.1.0
   permission_handler: ^11.3.1
   on_audio_query: ^2.9.0
+  curved_navigation_bar: ^1.0.6
+  just_audio: ^0.9.37
+  audioplayers: ^1.0.1
 
 dev_dependencies:
   flutter_test:
