@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:pluseplay/database/models/all_song_model.dart';
+import 'package:pluseplay/database/models/all_songs/all_song_model.dart';
 
 ValueNotifier<List<AllSongModel>> allSongNotifier = ValueNotifier([]);
 

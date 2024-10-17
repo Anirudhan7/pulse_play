@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pluseplay/database/function/hive_store.dart';
 import 'package:pluseplay/database/function/internal_storage.dart';
-import 'package:pluseplay/database/models/all_song_model.dart';
+import 'package:pluseplay/database/models/all_songs/all_song_model.dart';
 import 'package:pluseplay/screens/allsongs/allsongs.dart';
 import 'package:pluseplay/screens/favourites/favorites_screen.dart';
+import 'package:pluseplay/screens/playList/playlist.dart';
 import 'package:pluseplay/screens/search/search.dart';
 import 'package:pluseplay/screens/settings/settings_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -250,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
           items: const [
             Icon(Icons.home, color: Colors.white),
             Icon(Icons.search, color: Colors.white), 
-            Icon(Icons.library_music, color: Colors.white),
+            Icon(Icons.library_music, color: Colors.white), 
             Icon(Icons.favorite, color: Colors.white),
           ],
           onTap: (int index) {
@@ -259,6 +260,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(builder: (context) => SearchPage()), 
               );
+            } else if (index == 2) { 
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PlaylistScreen()),
+              );
             } else if (index == 3) { 
               Navigator.push(
                 context,
@@ -266,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             } else {
               setState(() {
-                _selectedIndex = index;
+                _selectedIndex = index; 
               });
             }
           },

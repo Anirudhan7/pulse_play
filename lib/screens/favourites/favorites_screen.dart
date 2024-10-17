@@ -14,12 +14,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     getAllSongsFromFavorites(); 
   }
 
-  @override
+  @override 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Favorites"),
-        backgroundColor: Colors.black,
+        title: const Text("Favorites",style: TextStyle(color: Colors.white),),
+        backgroundColor: const Color.fromARGB(255, 15, 1, 77),
         centerTitle: true,
       ),
       body: ValueListenableBuilder<List<FavoriteModel>>(

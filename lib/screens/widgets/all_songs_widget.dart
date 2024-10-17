@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:pluseplay/database/models/all_song_model.dart';
+import 'package:pluseplay/database/models/all_songs/all_song_model.dart';
 
 class AllSongsWidget extends StatelessWidget {
   const AllSongsWidget({

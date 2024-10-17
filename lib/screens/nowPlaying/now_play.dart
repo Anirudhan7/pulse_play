@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:pluseplay/database/models/all_song_model.dart';
+import 'package:pluseplay/database/models/all_songs/all_song_model.dart';
 import 'package:pluseplay/database/function/favourite/favourite.dart';
 import 'package:pluseplay/database/models/favourites/favourite_model.dart';
+import 'package:pluseplay/screens/playList/playlist.dart';
 
 class PlayingNow extends StatefulWidget {
   final AllSongModel song;
@@ -115,6 +116,13 @@ class _PlayingNowState extends State<PlayingNow> {
     super.dispose();
   }
 
+  void _addToPlaylist() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PlaylistScreen()), 
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,6 +135,20 @@ class _PlayingNowState extends State<PlayingNow> {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          PopupMenuButton<int>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onSelected: (value) {
+              if (value == 1) _addToPlaylist();
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: Text("Add to Playlist"),
+              ),
+            ],
+          ),
+        ],
       ),
       backgroundColor: Colors.black,
       body: Padding(

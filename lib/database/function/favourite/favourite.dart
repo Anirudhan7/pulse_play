@@ -6,7 +6,7 @@ ValueNotifier<List<FavoriteModel>> favoriteNotifier = ValueNotifier([]);
 
 Future<void> addSongToFavorites(FavoriteModel song) async {
   final openDB = await Hive.openBox<FavoriteModel>("favorites_box");
-  if (!openDB.containsKey(song.id)) { 
+  if (!openDB.containsKey(song.id)) {
     await openDB.put(song.id, song);
     favoriteNotifier.value.add(song);
     favoriteNotifier.notifyListeners();

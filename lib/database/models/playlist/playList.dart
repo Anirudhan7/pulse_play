@@ -1,9 +1,27 @@
 import 'dart:typed_data';
 import 'package:hive/hive.dart';
-part 'favourite_model.g.dart';
+part 'playList.g.dart';
 
-@HiveType(typeId: 3) 
-class FavoriteModel {
+@HiveType(typeId: 2) // Keep this ID for Playlist
+class Playlist {
+  @HiveField(0)
+  int? id;
+
+  @HiveField(1)
+  String name;
+
+  @HiveField(2)
+  List<PlaylistSongModel> songs;
+
+  Playlist({
+    required this.name,
+    List<PlaylistSongModel>? songs,
+    this.id,
+  }) : songs = songs ?? [];
+}
+
+@HiveType(typeId: 4) 
+class PlaylistSongModel {
   @HiveField(0)
   int id;
 
@@ -14,15 +32,15 @@ class FavoriteModel {
   final String artist;
 
   @HiveField(3)
-  final String? uri;
+  final String uri;
 
   @HiveField(4)
-  Uint8List imageUri;
+  Uint8List? imageUri;
 
   @HiveField(5)
   final String songPath;
 
-  FavoriteModel({
+  PlaylistSongModel({
     required this.id,
     required this.songTitle,
     required this.artist,
@@ -34,6 +52,6 @@ class FavoriteModel {
   Uint8List? get imageBytes => imageUri;
 
   set imageBytes(Uint8List? bytes) {
-    imageUri = bytes!;
+    imageUri = bytes;
   }
 }

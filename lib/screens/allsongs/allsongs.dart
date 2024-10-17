@@ -1,8 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:pluseplay/database/function/hive_store.dart';
-import 'package:pluseplay/database/models/all_song_model.dart';
+import 'package:pluseplay/database/function/playlists/plaListfunc.dart';
+import 'package:pluseplay/database/models/all_songs/all_song_model.dart';
+import 'package:pluseplay/database/models/playlist/playList.dart';
 import 'package:pluseplay/screens/nowPlaying/now_play.dart';
 import 'package:pluseplay/screens/search/search.dart';
 
@@ -15,7 +18,8 @@ class AllSongsPage extends StatefulWidget {
 
 class _AllSongsPageState extends State<AllSongsPage> {
   int _selectedIndex = 0;
-final _audioPlayer =AudioPlayer();
+  final _audioPlayer = AudioPlayer();
+
   @override
   void initState() {
     super.initState();
@@ -100,13 +104,64 @@ final _audioPlayer =AudioPlayer();
                       fontSize: 14,
                     ),
                   ),
-                  trailing: IconButton(
+                  trailing: PopupMenuButton<String>(
                     icon: const Icon(Icons.more_vert, color: Colors.white),
-                    onPressed: () {},
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        const PopupMenuItem<String>(
+                          value: 'add_to_playlist',
+                          child: Text('Add to Playlist'),
+                        ),
+                      ];
+                    },
+                    onSelected: (String value) async {
+                      if (value == 'add_to_playlist') {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Select Playlist'),
+                              content: ValueListenableBuilder<List<Playlist>>(
+                                valueListenable: playlistsNotifier,
+                                builder: (context, playlists, child) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: playlists.map((playlist) {
+                                      return ListTile(
+                                        title: Text(playlist.name),
+                                        onTap: () {
+                                          final songToAdd = PlaylistSongModel(
+                                            id: song.id!,
+                                            songTitle: song.songTitle,
+                                            artist: song.artist,
+                                            uri: song.uri,
+                                            imageUri: song.imageUri,
+                                            songPath: song.songPath,
+                                          );
+
+                                          addSongToPlaylist(playlist.name, songToAdd);
+                                          Navigator.of(context).pop();
+                                        },
+                                      );
+                                    }).toList(),
+                                  );
+                                },
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
-                  onTap: () async{
-                    // await _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(song.uri)));
-                    // _audioPlayer.play();
+                  onTap: () async {
                     if (song.uri.isNotEmpty) {
                       Navigator.push(
                         context,
