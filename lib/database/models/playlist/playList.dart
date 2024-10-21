@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:hive/hive.dart';
 part 'playList.g.dart';
 
-@HiveType(typeId: 2) // Keep this ID for Playlist
+@HiveType(typeId: 2) 
 class Playlist {
   @HiveField(0)
   int? id;

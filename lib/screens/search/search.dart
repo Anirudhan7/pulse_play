@@ -100,7 +100,7 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ),
                         onTap: () {
-                          // Navigate to the Playing Now screen
+                       
                           Navigator.push(
                             context,
                             MaterialPageRoute(

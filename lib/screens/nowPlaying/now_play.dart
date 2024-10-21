@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -5,6 +6,8 @@ import 'package:pluseplay/database/models/all_songs/all_song_model.dart';
 import 'package:pluseplay/database/function/favourite/favourite.dart';
 import 'package:pluseplay/database/models/favourites/favourite_model.dart';
 import 'package:pluseplay/screens/playList/playlist.dart';
+import 'package:pluseplay/database/models/recent_play/recent_play.dart';
+import 'package:pluseplay/database/function/recent_play/recent_play.dart'; 
 
 class PlayingNow extends StatefulWidget {
   final AllSongModel song;
@@ -58,6 +61,17 @@ class _PlayingNowState extends State<PlayingNow> {
       if (widget.song.uri.isNotEmpty) {
         await _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(widget.song.uri)));
         await _audioPlayer.play();
+
+        // Add the song to recent plays when it starts playing
+        await addRecentPlay(RecentPlayModel(
+          id: widget.song.id!,
+          songTitle: widget.song.songTitle,
+          artist: widget.song.artist,
+          uri: widget.song.uri,
+          imageUri: widget.song.imageBytes!, // Assuming this returns Uint8List
+          timestamp: DateTime.now(),
+          songPath: widget.song.songPath,
+        ));
       } else {
         throw Exception("Invalid song URI!");
       }
@@ -119,7 +133,7 @@ class _PlayingNowState extends State<PlayingNow> {
   void _addToPlaylist() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const PlaylistScreen()), 
+      MaterialPageRoute(builder: (context) => const PlaylistScreen()),
     );
   }
 

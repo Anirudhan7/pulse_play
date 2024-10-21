@@ -167,7 +167,7 @@ class _AllSongsPageState extends State<AllSongsPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => PlayingNow(
-                            song: song,
+                            song: song, 
                           ),
                         ),
                       );
