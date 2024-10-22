@@ -12,8 +12,8 @@ import 'package:pluseplay/screens/settings/settings_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:pluseplay/screens/widgets/all_songs_widget.dart';
 import 'package:pluseplay/screens/nowPlaying/now_play.dart';
-import 'dart:typed_data';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'dart:typed_data';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -126,7 +126,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                // Recent Plays Section
+
+                
                 const Text(
                   "Recent Plays",
                   style: TextStyle(
@@ -153,54 +154,60 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemCount: recentPlays.length,
                               itemBuilder: (context, index) {
                                 final play = recentPlays[index];
-                                
-                                return Container(
-                                  width: 160,
-                                  margin: const EdgeInsets.only(right: 16),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: play.imageUri.isNotEmpty
-                                            ? Image.memory(
-                                                play.imageUri,
-                                                height: 100,
-                                                width: 160,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : Container(
-                                                height: 100,
-                                                width: 160,
-                                                color: Colors.grey,
-                                                child: const Icon(
-                                                  Icons.image,
-                                                  color: Colors.white,
-                                                ),
+                                return GestureDetector(
+                                  onTap: () {
+                               
+                                  },
+                                  child: Container(
+                                    width: 120,
+                                    margin: const EdgeInsets.only(right: 16),
+                                    child: Column(
+
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: QueryArtworkWidget(
+                                            artworkFit: BoxFit.fill,
+                                            id: play.id,
+                                            type: ArtworkType.AUDIO,
+                                            artworkHeight: 100,
+                                            artworkWidth: 120,
+                                            nullArtworkWidget: Container(
+                                              height: 100,
+                                              width: 120,
+                                              color: Colors.green,
+                                              child: const Icon(
+                                                Icons.music_note,
+                                                color: Colors.white,
                                               ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        play.songTitle,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        play.artist,
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12,
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          play.songTitle,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
+                                        Text(
+                                          play.artist,
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 12,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 );
                               },
@@ -209,7 +216,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                
+
+                // Artists Section
                 const Text(
                   "Artists",
                   style: TextStyle(
@@ -223,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 100,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: [
+                    children: const [
                       ArtistCard(artistName: "Artist 1"),
                       ArtistCard(artistName: "Artist 2"),
                       ArtistCard(artistName: "Artist 3"),
