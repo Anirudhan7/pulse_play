@@ -65,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // All Songs Section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -156,7 +155,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 final play = recentPlays[index];
                                 return GestureDetector(
                                   onTap: () {
-                               
+                                Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PlayingNow(song: play),
+                                      ),
+                                    );
                                   },
                                   child: Container(
                                     width: 120,
@@ -217,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Artists Section
+               
                 const Text(
                   "Artists",
                   style: TextStyle(

@@ -42,7 +42,7 @@ dependencies:
   curved_navigation_bar: ^1.0.6
   just_audio: ^0.9.37
   audioplayers: ^1.0.1
-
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
