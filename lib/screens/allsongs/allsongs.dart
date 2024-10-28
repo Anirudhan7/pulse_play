@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:pluseplay/database/function/hive_store.dart';
 import 'package:pluseplay/database/function/playlists/plaListfunc.dart';
+import 'package:pluseplay/database/function/recent_play/recent_play.dart';
 import 'package:pluseplay/database/models/all_songs/all_song_model.dart';
 import 'package:pluseplay/database/models/playlist/playList.dart';
 import 'package:pluseplay/screens/nowPlaying/now_play.dart';
@@ -163,11 +163,16 @@ class _AllSongsPageState extends State<AllSongsPage> {
                   ),
                   onTap: () async {
                     if (song.uri.isNotEmpty) {
+                      final allSongsList = allSongNotifier.value;
+                      final recentPlaysList = recentPlayNotifier.value;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => PlayingNow(
-                            song: song, 
+                            song: song,
+                            allSongs: allSongsList,
+                            recentPlays: recentPlaysList,
+                            isFromRecent: false, // Set to true if playing from recent plays
                           ),
                         ),
                       );

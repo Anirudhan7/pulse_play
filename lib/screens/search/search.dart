@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:pluseplay/database/function/recent_play/recent_play.dart';
 import 'package:pluseplay/database/models/all_songs/all_song_model.dart';
 import 'package:pluseplay/database/function/hive_store.dart';
 import 'package:pluseplay/screens/nowPlaying/now_play.dart';
@@ -13,7 +14,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   String query = '';
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,11 +101,15 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ),
                         onTap: () {
-                       
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => PlayingNow(song: song),
+                              builder: (context) => PlayingNow(
+                                song: song,
+                                allSongs: allSongNotifier.value,
+                                recentPlays: recentPlayNotifier.value,
+                                isFromRecent: false,
+                              ),
                             ),
                           );
                         },

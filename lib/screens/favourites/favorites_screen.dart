@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pluseplay/database/function/favourite/favourite.dart';
 import 'package:pluseplay/database/models/favourites/favourite_model.dart';
+import 'package:pluseplay/screens/nowPlaying/now_play.dart';
+import 'package:on_audio_query/on_audio_query.dart'; // Import for QueryArtworkWidget
+import 'package:pluseplay/database/function/playlists/plaListfunc.dart'; // Import for playlist functions
+import 'package:pluseplay/database/models/playlist/playList.dart'; // Import for Playlist model
 
 class FavoritesScreen extends StatefulWidget {
   @override
@@ -18,7 +22,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Favorites",style: TextStyle(color: Colors.white),),
+        title: const Text("Favorites", style: TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromARGB(255, 15, 1, 77),
         centerTitle: true,
       ),
@@ -37,6 +41,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             padding: const EdgeInsets.all(8),
             itemCount: favoriteSongs.length,
             itemBuilder: (context, index) {
+              // Ensure the index is valid
+              if (index < 0 || index >= favoriteSongs.length) {
+                return const SizedBox.shrink(); // Return an empty widget if index is out of bounds
+              }
+
               final song = favoriteSongs[index];
               return Dismissible(
                 key: Key(song.id.toString()),
@@ -57,6 +66,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   color: Colors.grey[900],
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: ListTile(
+                    leading: QueryArtworkWidget(
+                      id: song.id!,
+                      type: ArtworkType.AUDIO,
+                      nullArtworkWidget: const Icon(Icons.music_note, color: Colors.white),
+                    ),
                     title: Text(
                       song.songTitle,
                       style: const TextStyle(color: Colors.white),
@@ -64,6 +78,78 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     subtitle: Text(
                       song.artist,
                       style: const TextStyle(color: Colors.white70),
+                    ),
+                    onTap: () {
+                      // Navigate to the PlayingNow screen when the song is tapped
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PlayingNow(
+                            song: song, // Pass the song to the PlayingNow screen
+                            allSongs: favoriteSongs, // Pass the list of favorite songs
+                            recentPlays: [], // You can pass recent plays if needed
+                            isFromRecent: false, // Set this based on your logic
+                          ),
+                        ),
+                      );
+                    },
+                    trailing: PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_vert, color: Colors.white),
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          const PopupMenuItem<String>(
+                            value: 'add_to_playlist',
+                            child: Text('Add to Playlist'),
+                          ),
+                        ];
+                      },
+                      onSelected: (String value) async {
+                        if (value == 'add_to_playlist') {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Select Playlist'),
+                                content: ValueListenableBuilder<List<Playlist>>(
+                                  valueListenable: playlistsNotifier,
+                                  builder: (context, playlists, child) {
+                                    return SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children : playlists.map((playlist) {
+                                          return ListTile(
+                                            title: Text(playlist.name),
+                                            onTap: () {
+                                              final songToAdd = PlaylistSongModel(
+                                                id: song.id!,
+                                                songTitle: song.songTitle,
+                                                artist: song.artist,
+                                                uri: song.uri ?? '', // Provide a default value if null
+                                                imageUri: song.imageUri,
+                                                songPath: song.songPath,
+                                              );
+
+                                              // Ensure playlist.id is not null
+                                              if (playlist.id != null) {
+                                                addSongToPlaylist(playlist.name, songToAdd);
+                                                Navigator.pop(context);
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('Playlist ID is null')),
+                                                );
+                                              }
+                                            },
+                                          );
+                                        }).toList(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
                     ),
                   ),
                 ),

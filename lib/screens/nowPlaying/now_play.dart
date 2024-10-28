@@ -11,10 +11,16 @@ import 'package:pluseplay/database/function/recent_play/recent_play.dart';
 
 class PlayingNow extends StatefulWidget {
   final dynamic song;
+  final List<dynamic> allSongs; // List of all songs
+  final List<dynamic> recentPlays; // List of recent plays
+  final bool isFromRecent; // Determine if playing from recent plays
 
   const PlayingNow({
     super.key,
     required this.song,
+    required this.allSongs,
+    required this.recentPlays,
+    required this.isFromRecent,
   });
 
   @override
@@ -27,6 +33,8 @@ class _PlayingNowState extends State<PlayingNow> {
   late ValueNotifier<Duration> durationNotifier;
   late ValueNotifier<Duration> positionNotifier;
   bool isFavorite = false;
+  late List<dynamic> currentPlaylist; // Current playlist
+  late int currentIndex; // Current song index
 
   @override
   void initState() {
@@ -34,9 +42,14 @@ class _PlayingNowState extends State<PlayingNow> {
     isPlayingNotifier = ValueNotifier(false);
     durationNotifier = ValueNotifier(Duration.zero);
     positionNotifier = ValueNotifier(Duration.zero);
+    
+    // Initialize current playlist based on where the song is coming from
+    currentPlaylist = widget.isFromRecent ? widget.recentPlays : widget.allSongs;
+    currentIndex = currentPlaylist.indexWhere((song) => song.id == widget.song.id);
+    
     _initializePlayer();
+    
     isFavorite = favoriteNotifier.value.any((fav) => fav.id == widget.song.id);
-
     favoriteNotifier.addListener(() {
       if (mounted) {
         setState(() {
@@ -58,8 +71,8 @@ class _PlayingNowState extends State<PlayingNow> {
 
   Future<void> _initializePlayer() async {
     try {
-      if (widget.song.uri.isNotEmpty) {
-        await _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(widget.song.uri)));
+      if (currentPlaylist.isNotEmpty && currentIndex >= 0) {
+        await _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(currentPlaylist[currentIndex].uri)));
         await _audioPlayer.play();
         await addRecentPlay(RecentPlayModel(
           id: widget.song.id!,
@@ -94,7 +107,7 @@ class _PlayingNowState extends State<PlayingNow> {
         artist: widget.song.artist,
         uri: widget.song.uri,
         imageUri: widget.song.imageBytes!,
-        songPath: widget.song.songPath,
+        songPath: widget .song.songPath,
       );
       await addSongToFavorites(newFavorite);
       favoriteNotifier.value = [...favoriteNotifier.value, newFavorite];
@@ -109,6 +122,24 @@ class _PlayingNowState extends State<PlayingNow> {
       _audioPlayer.pause();
     } else {
       _audioPlayer.play();
+    }
+  }
+
+  void _playNext() async {
+    if (currentIndex < currentPlaylist.length - 1) {
+      setState(() {
+        currentIndex++;
+      });
+      await _initializePlayer();
+    }
+  }
+
+  void _playPrevious() async {
+    if (currentIndex > 0) {
+      setState(() {
+        currentIndex--;
+      });
+      await _initializePlayer();
     }
   }
 
@@ -172,7 +203,7 @@ class _PlayingNowState extends State<PlayingNow> {
               height: 300,
               width: 300,
               child: QueryArtworkWidget(
-                id: widget.song.id!,
+                id: currentPlaylist[currentIndex].id!,
                 type: ArtworkType.AUDIO,
                 artworkFit: BoxFit.cover,
                 nullArtworkWidget: Icon(
@@ -184,7 +215,7 @@ class _PlayingNowState extends State<PlayingNow> {
             ),
             const SizedBox(height: 20),
             Text(
-              widget.song.songTitle,
+              currentPlaylist[currentIndex].songTitle,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -194,7 +225,7 @@ class _PlayingNowState extends State<PlayingNow> {
             ),
             const SizedBox(height: 10),
             Text(
-              widget.song.artist,
+              currentPlaylist[currentIndex].artist,
               style: const TextStyle(
                 fontSize: 18,
                 color: Colors.grey,
@@ -252,7 +283,7 @@ class _PlayingNowState extends State<PlayingNow> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.skip_previous, color: Colors.white),
-                      onPressed: () {},
+                      onPressed: _playPrevious,
                     ),
                     IconButton(
                       icon: Icon(
@@ -264,11 +295,11 @@ class _PlayingNowState extends State<PlayingNow> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.skip_next, color: Colors.white),
-                      onPressed: () {},
+ onPressed: _playNext,
                     ),
                     IconButton(
                       icon: Icon(
-                        Icons.favorite,
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: isFavorite ? Colors.blue : Colors.white,
                       ),
                       onPressed: _toggleFavorite,

@@ -1,8 +1,7 @@
-// PlaylistScreen.dart
 import 'package:flutter/material.dart';
 import 'package:pluseplay/database/function/playlists/plaListfunc.dart';
 import 'package:pluseplay/database/models/playlist/playList.dart';
-import 'package:pluseplay/screens/playList/new_list.dart';
+import 'package:pluseplay/screens/playList/new_list.dart'; // Assuming you have this screen
 
 class PlaylistScreen extends StatelessWidget {
   const PlaylistScreen({super.key});
@@ -53,8 +52,7 @@ class PlaylistScreen extends StatelessWidget {
                             actions: [
                               TextButton(
                                 onPressed: () async {
-                                  await createPlaylist(
-                                      playlistName: playlistName);
+                                  await createPlaylist(playlistName: playlistName);
                                   Navigator.of(context).pop();
                                 },
                                 child: const Text('Create'),
@@ -83,8 +81,7 @@ class PlaylistScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              PlaylistDetailScreen(playlist: playlist),
+                          builder: (context) => PlaylistDetailScreen(playlist: playlist),
                         ),
                       );
                     },
@@ -95,8 +92,7 @@ class PlaylistScreen extends StatelessWidget {
                           context: context,
                           builder: (context) => AlertDialog(
                             title: const Text("Delete Playlist"),
-                            content: const Text(
-                                "Are you sure you want to delete this playlist?"),
+                            content: const Text("Are you sure you want to delete this playlist?"),
                             actions: [
                               TextButton(
                                 child: const Text("Cancel"),

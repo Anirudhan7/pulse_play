@@ -27,12 +27,17 @@ Future<void> addSongToPlaylist(String playlistName, PlaylistSongModel song) asyn
     (playlist) => playlist.name == playlistName,
   );
 
-  List<PlaylistSongModel> updatedSongs = List.from(playlist.songs);
-  updatedSongs.add(song);
-  playlist.songs = updatedSongs;
+  // Check if the song already exists in the playlist
+  if (!playlist.songs.any((existingSong) => existingSong.id == song.id)) {
+    List<PlaylistSongModel> updatedSongs = List.from(playlist.songs);
+    updatedSongs.add(song);
+    playlist.songs = updatedSongs;
 
-  await playlistBox.put(playlist.id!, playlist);
-  await getPlaylists(); 
+    await playlistBox.put(playlist.id!, playlist);
+    await getPlaylists(); 
+  } else {
+    print('Song "${song.songTitle}" is already in the playlist "${playlistName}".');
+  }
 }
 
 Future<void> removeSongFromPlaylist(String playlistName, PlaylistSongModel song) async {
@@ -41,7 +46,7 @@ Future<void> removeSongFromPlaylist(String playlistName, PlaylistSongModel song)
     (playlist) => playlist.name == playlistName,
   );
 
-  playlist.songs.removeWhere((existingSong) => existingSong.songTitle == song.songTitle);
+  playlist.songs.removeWhere((existingSong) => existingSong.id == song.id);
   await playlistBox.put(playlist.id!, playlist);
   
   await getPlaylists(); 
