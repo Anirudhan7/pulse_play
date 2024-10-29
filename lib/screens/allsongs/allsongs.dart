@@ -90,7 +90,9 @@ class _AllSongsPageState extends State<AllSongsPage> {
                     nullArtworkWidget: const Icon(Icons.music_note),
                   ),
                   title: Text(
-                    song.songTitle,
+                    song.songTitle.length > 30
+                        ? '${song.songTitle.substring(0, 30)}...'
+                        : song.songTitle,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -139,7 +141,7 @@ class _AllSongsPageState extends State<AllSongsPage> {
                                             songPath: song.songPath,
                                           );
 
-                                          addSongToPlaylist(playlist.name, songToAdd);
+ addSongToPlaylist(playlist.name, songToAdd);
                                           Navigator.of(context).pop();
                                         },
                                       );
@@ -172,7 +174,7 @@ class _AllSongsPageState extends State<AllSongsPage> {
                             song: song,
                             allSongs: allSongsList,
                             recentPlays: recentPlaysList,
-                            isFromRecent: false, // Set to true if playing from recent plays
+                            isFromRecent: false,
                           ),
                         ),
                       );

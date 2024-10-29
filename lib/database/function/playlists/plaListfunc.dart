@@ -32,7 +32,6 @@ Future<void> addSongToPlaylist(String playlistName, PlaylistSongModel song) asyn
     List<PlaylistSongModel> updatedSongs = List.from(playlist.songs);
     updatedSongs.add(song);
     playlist.songs = updatedSongs;
-
     await playlistBox.put(playlist.id!, playlist);
     await getPlaylists(); 
   } else {

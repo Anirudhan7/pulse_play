@@ -5,8 +5,8 @@ import 'package:pluseplay/database/function/recent_play/recent_play.dart';
 import 'package:pluseplay/database/models/all_songs/all_song_model.dart';
 import 'package:pluseplay/database/models/recent_play/recent_play.dart';
 import 'package:pluseplay/screens/allsongs/allsongs.dart';
-import 'package:pluseplay/screens/artists.dart';
 import 'package:pluseplay/screens/favourites/favorites_screen.dart';
+import 'package:pluseplay/screens/playList/new_list.dart';
 import 'package:pluseplay/screens/playList/playlist.dart';
 import 'package:pluseplay/screens/search/search.dart';
 import 'package:pluseplay/screens/settings/settings_screen.dart';
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: _selectedIndex == 0 // Show AppBar only on Home screen
+        appBar: _selectedIndex == 0 
             ? AppBar(
                 backgroundColor: const Color.fromARGB(255, 13, 3, 56),
                 title: const Text(
@@ -67,8 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               )
-            : null, // No AppBar for other screens
-        body: _screens[_selectedIndex], // Display the selected screen
+            : null, 
+        body: _screens[_selectedIndex], 
         backgroundColor: Colors.black,
         bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: Colors.black,
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
           onTap: (int index) {
             setState(() {
-              _selectedIndex = index; // Update the selected index
+              _selectedIndex = index; 
             });
           },
           height: 60,
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Home content widget
+
 class HomeContent extends StatelessWidget {
   const HomeContent({Key? key}) : super(key: key);
 
@@ -116,7 +116,7 @@ class HomeContent extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.push (
                       context,
                       MaterialPageRoute(builder: (context) => const AllSongsPage()),
                     );
@@ -138,7 +138,7 @@ class HomeContent extends StatelessWidget {
                             style: TextStyle(color: Colors.white),
                           ),
                         )
-                      : ListView .builder(
+                      : ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: allSongs.length,
                           itemBuilder: (context, index) {
@@ -261,7 +261,7 @@ class HomeContent extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const Text(
-              "Artists",
+              "Playlists",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -274,9 +274,9 @@ class HomeContent extends StatelessWidget {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: const [
-                  ArtistCard(artistName: "Artist 1"),
-                  ArtistCard(artistName: "Artist 2"),
-                  ArtistCard(artistName: "Artist 3"),
+                  PlaylistCard(playlistName: "Playlist 1"),
+                  PlaylistCard(playlistName: "Playlist 2"),
+                  PlaylistCard(playlistName: "Playlist 3"),
                 ],
               ),
             ),
@@ -287,21 +287,19 @@ class HomeContent extends StatelessWidget {
   }
 }
 
-class ArtistCard extends StatelessWidget {
-  final String artistName;
+class PlaylistCard extends StatelessWidget {
+  final String playlistName;
 
-  const ArtistCard({Key? key, required this.artistName}) : super(key: key);
+  const PlaylistCard({Key? key, required this.playlistName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to the ArtistSongsPage with the artist name
+       
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => ArtistSongsPage(artistName: artistName),
-          ),
+          MaterialPageRoute(builder: (context) => PlaylistDetailScreen(playlistName: playlistName)),
         );
       },
       child: Container(
@@ -309,11 +307,11 @@ class ArtistCard extends StatelessWidget {
         width: 100,
         decoration: BoxDecoration(
           color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius .circular(8),
         ),
         child: Center(
           child: Text(
-            artistName,
+            playlistName,
             style: const TextStyle(color: Colors.white),
           ),
         ),
