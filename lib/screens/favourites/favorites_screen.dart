@@ -41,9 +41,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             padding: const EdgeInsets.all(8),
             itemCount: favoriteSongs.length,
             itemBuilder: (context, index) {
-              // Ensure the index is valid
+             
               if (index < 0 || index >= favoriteSongs.length) {
-                return const SizedBox.shrink(); // Return an empty widget if index is out of bounds
+                return const SizedBox.shrink(); 
               }
 
               final song = favoriteSongs[index];

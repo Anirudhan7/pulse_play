@@ -30,7 +30,7 @@ class PlaylistDetailScreen extends StatelessWidget {
         child: ValueListenableBuilder<List<Playlist>>(
           valueListenable: playlistsNotifier,
           builder: (context, playlists, child) {
-            // Check if the playlist exists
+            // Fetch the playlist by name
             final playlist = playlists.firstWhere(
               (p) => p.name == playlistName,
               orElse: () => Playlist(name: playlistName, songs: []), // Return an empty playlist if not found
@@ -45,9 +45,9 @@ class PlaylistDetailScreen extends StatelessWidget {
                     leading: QueryArtworkWidget(
                       id: song.id,
                       type: ArtworkType.AUDIO,
-                      nullArtworkWidget: Icon(
+                      nullArtworkWidget: const Icon(
                         Icons.music_note,
-                        color: Colors.grey[700],
+                        color: Colors.grey,
                       ),
                     ),
                     title: Text(
@@ -78,7 +78,7 @@ class PlaylistDetailScreen extends StatelessWidget {
             } else {
               return const Center(
                 child: Text(
-                  "Playlist not found or empty",
+                  "No songs in this playlist.",
                   style: TextStyle(color: Colors.white),
                 ),
               );

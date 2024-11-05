@@ -3,8 +3,19 @@ import 'package:pluseplay/database/function/playlists/plaListfunc.dart';
 import 'package:pluseplay/database/models/playlist/playList.dart';
 import 'package:pluseplay/screens/playList/new_list.dart';
 
-class PlaylistScreen extends StatelessWidget {
+class PlaylistScreen extends StatefulWidget {
   const PlaylistScreen({Key? key}) : super(key: key);
+
+  @override
+  _PlaylistScreenState createState() => _PlaylistScreenState();
+}
+
+class _PlaylistScreenState extends State<PlaylistScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getPlaylists(); // Fetch playlists when the screen is initialized
+  }
 
   @override
   Widget build(BuildContext context) {
